@@ -1,0 +1,51 @@
+name: Autonomous AI Agent Loop
+
+on:
+  workflow_dispatch:
+    inputs:
+      project_description:
+        description: 'وصف المشروع (مثلا: Create a simple to-do list API)'
+        required: true
+        default: 'Create a fully working calculator in Python'
+
+jobs:
+  run-ai-loop:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: pip install requests
+
+      - name: Install Ollama (Local AI runner)
+        run: curl -fsSL https://ollama.com/install.sh | sh
+
+      - name: Start Ollama Server
+        run: ollama serve &
+        
+      - name: Wait for Ollama to boot up
+        run: sleep 5
+
+      - name: Pull AI Models
+        run: |
+          ollama pull llama3.2
+          ollama pull qwen2.5-coder:1.5b
+
+      - name: Run Autonomous Loop
+        run: python main.py "${{ github.event.inputs.project_description }}"
+        
+      - name: Upload Results (Logs & Report)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-agent-results
+          path: |
+            log_*.json
+            log_*.txt
+            final_report.txt
