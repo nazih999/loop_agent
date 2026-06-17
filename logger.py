@@ -18,25 +18,25 @@ def log_iteration(iteration_num, plan, result, critique, timestamp):
         
     with open("log_readable.txt", "a", encoding="utf-8") as f:
         f.write(f"\n{'='*40}\n")
-        f.write(f"التكرار رقم: {iteration_num} | الوقت: {timestamp}\n")
-        f.write(f"--- الخطة ---\n{plan}\n\n")
-        f.write(f"--- نتيجة التنفيذ ---\n{result}\n\n")
-        f.write(f"--- تحليل المخطط ---\n{json.dumps(critique, ensure_ascii=False, indent=2)}\n")
+        f.write(f"Iteration: {iteration_num} | Time: {timestamp}\n")
+        f.write(f"--- Plan ---\n{plan}\n\n")
+        f.write(f"--- Execution Result ---\n{result}\n\n")
+        f.write(f"--- Planner Critique ---\n{json.dumps(critique, ensure_ascii=False, indent=2)}\n")
 
 def generate_final_report():
     total_iterations = len(log_data)
-    report = f"""تقرير نهاية التشغيل
+    report = f"""Final Execution Report
 ========================
-عدد التكرارات المنفذة: {total_iterations}
+Total Iterations Completed: {total_iterations}
 
-ملخص العمليات:
+Summary of Operations:
 """
     for entry in log_data:
         critique = entry.get("critique", {})
         if isinstance(critique, dict):
-            report += f"\n- تكرار {entry['iteration']}:\n"
-            report += f"  * أخطاء مصححة: {critique.get('errors', 'لا يوجد')}\n"
-            report += f"  * أفكار جديدة: {critique.get('new_ideas', 'لا يوجد')}\n"
+            report += f"\n- Iteration {entry['iteration']}:\n"
+            report += f"  * Errors Found: {critique.get('errors', 'None')}\n"
+            report += f"  * Solutions: {critique.get('solutions', 'None')}\n"
         
     with open("final_report.txt", "w", encoding="utf-8") as f:
         f.write(report)

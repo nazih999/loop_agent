@@ -32,8 +32,8 @@ jobs:
 
       - name: Pull AI Models
         run: |
-          ollama pull llama3.2
-          ollama pull qwen2.5-coder:1.5b
+          ollama pull llama3.1
+          ollama pull qwen2.5-coder:7b
 
       - name: Run Autonomous Loop
         run: python -u main.py "$(cat FloatBoard_Prompt.txt)"
