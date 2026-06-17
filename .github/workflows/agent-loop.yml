@@ -1,12 +1,9 @@
 name: Autonomous AI Agent Loop
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
-    inputs:
-      project_description:
-        description: 'وصف المشروع (مثلا: Create a simple to-do list API)'
-        required: true
-        default: 'Create a fully working calculator in Python'
 
 jobs:
   run-ai-loop:
@@ -39,7 +36,7 @@ jobs:
           ollama pull qwen2.5-coder:1.5b
 
       - name: Run Autonomous Loop
-        run: python main.py "${{ github.event.inputs.project_description }}"
+        run: python main.py "$(cat FloatBoard_Prompt.txt)"
         
       - name: Upload Results (Logs & Report)
         uses: actions/upload-artifact@v4

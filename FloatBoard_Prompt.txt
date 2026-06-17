@@ -1,0 +1,81 @@
+## Build a Mobile Floating Clipboard App
+
+### Concept:
+A mobile version of FloatBoard that works as a floating bubble (like Messenger Chat Heads) that stays on top of other apps. Users can paste text, images, and links there, and access them instantly without switching apps.
+
+---
+
+## Core Features:
+
+### 1. Floating Bubble (Always on Top)
+- A small bubble that floats over all apps
+- Draggable anywhere on screen
+- Tap to open/close the clipboard panel
+- Works system-wide (even outside the app)
+
+### 2. Clipboard History
+- Automatically saves everything copied (text, links, images)
+- Shows last 50 items
+- Tap any item to copy it again
+- Search through clipboard history
+- Pin important items to top
+
+### 3. Quick Notes
+- Write quick notes inside the bubble panel
+- Auto-save
+- Pin notes to bubble
+- Swipe to delete
+
+### 4. Screenshot Markup
+- After taking a screenshot, open it instantly in the app
+- Draw arrows, circles, rectangles
+- Add text on top
+- Crop and share directly
+
+### 5. Smart Organization
+- Auto-categorize clips: Links, Emails, Phone Numbers, Addresses
+- Color-code by category
+- Star/favorite important clips
+
+### 6. Cloud Sync (Optional Premium)
+- Sync clipboard across devices
+- Backup to Google Drive
+- Restore on new phone
+
+---
+
+## User Stories (9 Scenarios):
+
+### Story 1: The Student
+Fatima is studying on her phone. She copies key points from a PDF and they auto-save to FloatBoard. She opens the bubble, reviews her notes, and copies them to her study group on WhatsApp.
+
+### Story 2: The Developer
+Yazan finds a useful code snippet on Twitter. He copies it. FloatBoard saves it. Later, he opens the bubble while coding on his laptop, and the snippet is there.
+
+### Story 3: The Designer
+Omar finds 5 inspiration images on Instagram. He copies them one by one. FloatBoard keeps them all. He opens the bubble to compare them side by side.
+
+### Story 4: The Writer
+Sarah is writing an article. She copies research notes, quotes, and references. FloatBoard categorizes them: Links, Quotes, Notes. She accesses them without leaving her writing app.
+
+### Story 5: The Business Owner
+Ahmed receives a client's address and phone number on WhatsApp. He copies them. FloatBoard auto-detects: "Phone: 06XX" and "Address: 123 Street". He taps to call or open Maps.
+
+### Story 6: The Forgetful User
+Omar copied a discount code yesterday. Today he needs it. He opens FloatBoard, searches "discount", and finds it instantly.
+
+### Story 7: The Screenshot User
+Fatima takes a screenshot of a chart. FloatBoard opens it instantly. She draws an arrow pointing to a key number, adds text "Important", and sends it to her boss.
+
+### Story 8: The Multi-Device User
+Yazan copies a link on his phone. FloatBoard syncs it. He opens his tablet, and the link is there in the bubble.
+
+### Story 9: The Minimalist
+Sarah wants zero clutter. She only uses the floating bubble. One tap = her clipboard. No need to open a full app. No ads. No complexity.
+
+---
+
+## Technical Requirements:
+- Platform: Android (Kotlin/Java)
+- Permissions: SYSTEM_ALERT_WINDOW, FOREGROUND_SERVICE, READ_CLIPBOARD
+- Architecture: Floating Service, Clipboard Manager, Local Database (Room)
