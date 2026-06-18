@@ -37,67 +37,60 @@ def get_file_tree():
             tree.append(f"{subindent}{f}")
     return "\n".join(tree)
 
-def generate_initial_plan(project_description):
+def planner1_draft(project_description, context=""):
     prompt = f"""
-You are an expert Software Architect and AI Project Manager.
-Project Description:
-{project_description}
+You are Planner 1: The Lead Architect.
+Project Goal: {project_description}
+Current File Tree: {get_file_tree()}
+Execution Context: {context}
 
-Your task: Create a detailed, step-by-step implementation plan (To-Do List) for building this app.
-Break it down into small, executable steps.
-
-You MUST respond strictly in JSON format with the following keys:
-"analysis": "Brief analysis of the project requirements",
-"todo_list": ["Step 1...", "Step 2...", "Step 3..."],
-"plan": "Detailed instruction for the very first step to give to the executor."
+Draft an actionable instruction for the Executor to implement the next logical step.
+Return STRICT JSON:
+{{
+  "todo_list": ["step1", "step2"],
+  "proposed_plan": "The highly detailed instruction for the executor"
+}}
 """
-    result = call_ollama(prompt)
-    try:
-        data = json.loads(result)
-        return data.get("plan", result), data.get("todo_list", [])
-    except json.JSONDecodeError:
-        return result, []
+    res = call_ollama(prompt)
+    try: return json.loads(res)
+    except: return {"todo_list": [], "proposed_plan": "Proceed with default implementation."}
 
-def critique_and_plan_next(project_description, previous_plan, execution_result, todo_list, time_remaining):
-    file_tree = get_file_tree()
-    
+def planner2_critique(draft_plan):
     prompt = f"""
-You are the Software Architect monitoring the execution.
-Original Project Goal:
-{project_description}
+You are Planner 2: The Critical Reviewer.
+Your job is to find flaws in Planner 1's proposed plan.
+Proposed Plan: {draft_plan}
 
-Current File Tree:
-{file_tree}
-
-Previous Instruction Given:
-{previous_plan}
-
-Executor Result:
-{execution_result}
-
-Remaining To-Do List:
-{todo_list}
-
-Time Remaining: {time_remaining} minutes.
-
-Analyze the result. If the step was successful, pop it from the todo list and plan the next step. If it failed or was incomplete, instruct the executor to fix it.
-
-You MUST respond strictly in JSON format with these keys:
-"analysis": "Review of the execution",
-"errors": "Any bugs or missing requirements found",
-"solutions": "How to fix the errors",
-"new_todo_list": ["Remaining step 1", "Remaining step 2..."],
-"next_plan": "The exact instruction for the executor for the next step. Must be highly detailed."
+If it is good, approve it. If there are issues, reject it and provide reasons.
+Return STRICT JSON:
+{{
+  "agreed": true,
+  "critique": "Your reasoning or suggested changes"
+}}
 """
-    result = call_ollama(prompt)
+    res = call_ollama(prompt)
     try:
-        return json.loads(result)
-    except json.JSONDecodeError:
-        print("[Planner] Failed to decode JSON. Attempting self-correction...")
-        return {
-            "analysis": "Failed to parse JSON output.",
-            "errors": "JSON format error",
-            "solutions": "Will retry formatting",
-            "new_todo_list": todo_list,
-            "next_plan": "Continue with the current task, but ensure you output files using the correct ### File: format."
-        }
+        data = json.loads(res)
+        if "agreed" not in data: data["agreed"] = True
+        return data
+    except: return {"agreed": True, "critique": "Parse error, assuming agreed."}
+
+def planner_review_executor(executor_proposal, current_plan):
+    prompt = f"""
+You are the Planning Board. The Executor read your plan but proposed a change.
+Original Plan: {current_plan}
+Executor's Proposal: {executor_proposal}
+
+Decide whether to approve the executor's change.
+Return STRICT JSON:
+{{
+  "approved": true,
+  "updated_plan": "The final instruction for the executor to run right now."
+}}
+"""
+    res = call_ollama(prompt)
+    try:
+        data = json.loads(res)
+        if "approved" not in data: data["approved"] = False
+        return data
+    except: return {"approved": False, "updated_plan": current_plan}
