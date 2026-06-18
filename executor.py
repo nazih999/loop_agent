@@ -31,13 +31,16 @@ def save_extracted_files(text):
     os.makedirs(base_dir, exist_ok=True)
     
     for match in matches:
-        filepath = match.group(1).strip()
+        filepath = match.group(1).strip().lstrip("/\\")
         code = match.group(2)
         full_path = os.path.join(base_dir, filepath)
-        os.makedirs(os.path.dirname(full_path), exist_ok=True)
-        with open(full_path, "w", encoding="utf-8") as f:
-            f.write(code)
-        saved_files.append(filepath)
+        try:
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+            with open(full_path, "w", encoding="utf-8") as f:
+                f.write(code)
+            saved_files.append(filepath)
+        except Exception as e:
+            print(f"Error saving {filepath}: {e}")
     return saved_files
 
 def evaluate_plan(plan):
