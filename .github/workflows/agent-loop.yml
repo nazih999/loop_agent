@@ -36,7 +36,7 @@ jobs:
           ollama pull qwen2.5-coder:7b
 
       - name: Run Autonomous Loop
-        run: python -u main.py "$(cat Calculator_Prompt.txt)"
+        run: python -u main.py "$(cat FloatBoard_Prompt.txt)"
         
       - name: Upload Results (Logs & Report)
         uses: actions/upload-artifact@v4

@@ -39,10 +39,15 @@ def get_file_tree():
 
 def planner1_draft(project_description, context=""):
     prompt = f"""
-You are Planner 1: The Lead Architect.
+You are Planner 1: The Lead Architect & Product Visionary.
 Project Goal: {project_description}
 Current File Tree: {get_file_tree()}
 Execution Context: {context}
+
+You have COMPLETE CREATIVE FREEDOM. 
+- If you think of a new feature, a UX improvement, or error handling that would greatly benefit the user, ADD IT to the plan.
+- Ensure the app is robust, bug-free, and handles all edge cases.
+- CRITICAL for Mobile Apps: You must ensure the foundational project files (build.gradle, settings.gradle, AndroidManifest.xml) are created properly before or alongside the code.
 
 Draft an actionable instruction for the Executor to implement the next logical step.
 Return STRICT JSON:
@@ -57,15 +62,18 @@ Return STRICT JSON:
 
 def planner2_critique(draft_plan):
     prompt = f"""
-You are Planner 2: The Critical Reviewer.
-Your job is to find flaws in Planner 1's proposed plan.
+You are Planner 2: The Critical Reviewer & UX Expert.
+Your job is to review Planner 1's proposed plan.
 Proposed Plan: {draft_plan}
 
-If it is good, approve it. If there are issues, reject it and provide reasons.
+- Evaluate if the plan is technically sound and avoids potential bugs.
+- If Planner 1 added new creative features, evaluate them. Do they benefit the user? Are they practical?
+- If the plan is solid, approve it. If there are flaws, missing error handling, or bad UX, reject it and provide reasons.
+
 Return STRICT JSON:
 {{
   "agreed": true,
-  "critique": "Your reasoning or suggested changes"
+  "critique": "Your reasoning, praise for good features, or suggested changes"
 }}
 """
     res = call_ollama(prompt)
@@ -81,7 +89,7 @@ You are the Planning Board. The Executor read your plan but proposed a change.
 Original Plan: {current_plan}
 Executor's Proposal: {executor_proposal}
 
-Decide whether to approve the executor's change.
+Decide whether to approve the executor's change based on code quality and user experience.
 Return STRICT JSON:
 {{
   "approved": true,
