@@ -43,6 +43,7 @@ jobs:
         with:
           name: ai-agent-results
           path: |
+            generated_app/
             log_*.json
             log_*.txt
             final_report.txt
